@@ -1,0 +1,79 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IEnumerable<LibraryStandard.Models.Book>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+
+}
+
+@if (User.Identity.IsAuthenticated)
+{
+    using (Html.BeginForm())
+    {
+    <p>
+        Find by title: @Html.TextBox("SearchString")
+        Find by Writer: @Html.TextBox("WriterString")
+
+        Find By Genre:  @Html.DropDownList("genreSearch", "all")
+        <input type="submit" value="Search" />
+    </p>
+    }
+}
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Genre.GenreName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Writer.FirstName)
+            </th>89
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReleaseDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Genre.GenreName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Writer.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReleaseDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.BookId }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.BookId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.BookId })
+                </td>
+            </tr>
+        }
+
+    </table>
+    @Html.PagedListPager((IPagedList)Model, page => Url.Action("Index", new { page, titleSearch = ViewBag.TitleSearch, sortOrder = ViewBag.CurrentSortParm }))
